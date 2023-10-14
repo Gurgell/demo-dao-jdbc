@@ -18,7 +18,7 @@ public class Program {
         Seller seller = sellerDao.findById(3);
 
         System.out.println("\n=== TEST 2: seller findByDepartments =====");
-        Department department = new Department(1, null);
+        Department department = new Department(2, null);
         List<Seller> listSellers = sellerDao.findByDepartment(department);
 
         for (Seller sl: listSellers
@@ -33,5 +33,11 @@ public class Program {
         ) {
             System.out.println(sl);
         }
+
+        System.out.println("\n=== TEST 4: seller insert =====");
+        Seller seller2 = new Seller("Greg", "greg@gmail.com", new Date(), 4000.0, department);
+        sellerDao.insert(seller2);
+        System.out.println("\nInserted! New id = " + seller2.getId());
+
     }
 }
