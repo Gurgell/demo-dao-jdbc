@@ -1,5 +1,6 @@
 package model.dao.impl;
 
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
 import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
@@ -58,12 +59,44 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void update(Seller dpt) {
+        PreparedStatement st = null;
+        try{
+            st = conn.prepareStatement(
+                    "UPDATE seller "
+                    + "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
+                    + "WHERE Id = ?"
+            );
+            st.setString(1, dpt.getName());
+            st.setString(2, dpt.getEmail());
+            st.setDate(3, new java.sql.Date(dpt.getBirthDate().getTime()));
+            st.setDouble(4, dpt.getBaseSalary());
+            st.setInt(5, dpt.getDepartment().getId());
+            st.setInt(6, dpt.getId());
+
+            st.executeUpdate();
+
+        }catch (SQLException ex){
+            throw new DbException(ex.getMessage());
+        }finally{
+            DB.closeStatement(st);
+        }
 
     }
 
     @Override
     public void deleteById(Integer id) {
+        PreparedStatement st = null;
+        try{
+            st = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
 
+            st.setInt(1, id);
+
+            st.executeUpdate();
+        }catch(SQLException ex){
+            throw new DbException(ex.getMessage());
+        }finally{
+            DB.closeStatement(st);
+        }
     }
 
     @Override
